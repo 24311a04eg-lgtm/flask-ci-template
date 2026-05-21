@@ -7,13 +7,12 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 posts_bp = Blueprint('posts', __name__, url_prefix='/api/posts')
 users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 
-# AUTH
-
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    if not data or not all(k in data for k in ['username', 'email', 'password']):
+    if not data or not all(k in data for k in ['username', 'email',
+                                                 'password']):
         return {'error': 'Missing fields'}, 400
 
     if User.query.filter_by(username=data['username']).first():
@@ -38,8 +37,6 @@ def login():
     token = create_access_token(identity=user.id)
     return {'access_token': token, 'user': user.to_dict()}, 200
 
-# POSTS
-
 
 @posts_bp.route('', methods=['GET'])
 def get_posts():
@@ -56,7 +53,8 @@ def create_post():
     if not data or 'title' not in data or 'content' not in data:
         return {'error': 'Missing fields'}, 400
 
-    post = Post(title=data['title'], content=data['content'], user_id=user_id)
+    post = Post(title=data['title'], content=data['content'],
+                user_id=user_id)
     db.session.add(post)
     db.session.commit()
 
@@ -105,19 +103,18 @@ def delete_post(post_id):
 @jwt_required()
 def add_comment(post_id):
     user_id = get_jwt_identity()
-    post = Post.query.get_or_404(post_id)
+    Post.query.get_or_404(post_id)
     data = request.get_json()
 
     if not data or 'content' not in data:
         return {'error': 'Missing content'}, 400
 
-    comment = Comment(content=data['content'], user_id=user_id, post_id=post_id)
+    comment = Comment(content=data['content'], user_id=user_id,
+                      post_id=post_id)
     db.session.add(comment)
     db.session.commit()
 
     return comment.to_dict(), 201
-
-# USERS
 
 
 @users_bp.route('/<int:user_id>', methods=['GET'])

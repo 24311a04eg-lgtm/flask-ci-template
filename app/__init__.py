@@ -29,7 +29,7 @@ def create_app(config_name='development'):
     CORS(app)
 
     with app.app_context():
-        from app.models import User, Post, Comment
+        from app import models  # noqa: F401
         db.create_all()
 
     from app.routes import auth_bp, posts_bp, users_bp

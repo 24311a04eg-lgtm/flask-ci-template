@@ -3,6 +3,7 @@ def test_get_posts(client):
     assert response.status_code == 200
     assert 'posts' in response.json
 
+
 def test_create_post_authenticated(client):
     client.post('/api/auth/register', json={
         'username': 'testuser',
@@ -14,18 +15,21 @@ def test_create_post_authenticated(client):
         'password': 'password123'
     })
     token = login.json['access_token']
-    
-    response = client.post('/api/posts', 
-        json={'title': 'Test Post', 'content': 'Test content'},
-        headers={'Authorization': f'Bearer {token}'})
-    
+
+    response = client.post('/api/posts',
+                           json={'title': 'Test Post',
+                                 'content': 'Test content'},
+                           headers={'Authorization': f'Bearer {token}'})
+
     assert response.status_code == 201
     assert response.json['title'] == 'Test Post'
 
+
 def test_create_post_unauthenticated(client):
-    response = client.post('/api/posts', 
-        json={'title': 'Test', 'content': 'Test'})
+    response = client.post('/api/posts',
+                           json={'title': 'Test', 'content': 'Test'})
     assert response.status_code == 401
+
 
 def test_get_single_post(client):
     client.post('/api/auth/register', json={
@@ -38,12 +42,12 @@ def test_get_single_post(client):
         'password': 'password123'
     })
     token = login.json['access_token']
-    
+
     created = client.post('/api/posts',
-        json={'title': 'Test', 'content': 'Content'},
-        headers={'Authorization': f'Bearer {token}'})
+                          json={'title': 'Test', 'content': 'Content'},
+                          headers={'Authorization': f'Bearer {token}'})
     post_id = created.json['id']
-    
+
     response = client.get(f'/api/posts/{post_id}')
     assert response.status_code == 200
     assert response.json['title'] == 'Test'
