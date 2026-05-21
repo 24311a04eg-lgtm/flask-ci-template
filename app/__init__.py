@@ -10,9 +10,10 @@ load_dotenv()
 db = SQLAlchemy()
 jwt = JWTManager()
 
+
 def create_app(config_name='development'):
     app = Flask(__name__)
-    
+
     if config_name == 'testing':
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         app.config['TESTING'] = True
@@ -20,24 +21,24 @@ def create_app(config_name='development'):
     else:
         app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
         app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-secret-key')
-    
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    
+
     db.init_app(app)
     jwt.init_app(app)
     CORS(app)
-    
+
     with app.app_context():
         from app.models import User, Post, Comment
         db.create_all()
-    
+
     from app.routes import auth_bp, posts_bp, users_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(posts_bp)
     app.register_blueprint(users_bp)
-    
+
     @app.route('/health')
     def health():
         return {'status': 'healthy'}, 200
-    
+
     return app
