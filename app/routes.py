@@ -12,7 +12,7 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 def register():
     data = request.get_json()
     if not data or not all(k in data for k in ['username', 'email',
-                                                'password']):
+                                                 'password']):
         return {'error': 'Missing fields'}, 400
 
     if User.query.filter_by(username=data['username']).first():
