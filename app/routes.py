@@ -11,18 +11,15 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    if not data or not all(k in data for k in ['username', 'email',
-                                                'password']):
+    required = ['username', 'email', 'password']
+    if not data or not all(k in data for k in required):
         return {'error': 'Missing fields'}, 400
-
     if User.query.filter_by(username=data['username']).first():
         return {'error': 'Username exists'}, 409
-
     user = User(username=data['username'], email=data['email'])
     user.set_password(data['password'])
     db.session.add(user)
     db.session.commit()
-
     return user.to_dict(), 201
 
 
