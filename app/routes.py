@@ -45,7 +45,7 @@ def get_posts():
 @jwt_required()
 def create_post():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    data = request.get_json(force=True, silent=True)
 
     if not data or 'title' not in data or 'content' not in data:
         return {'error': 'Missing fields'}, 400
