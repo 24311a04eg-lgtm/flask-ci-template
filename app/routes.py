@@ -42,11 +42,13 @@ def get_posts():
 
 
 @posts_bp.route('', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=True)
 def create_post():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    if not user_id:
+        return {'error': 'Unauthorized'}, 401
 
+    data = request.get_json(force=True)
     if not data or 'title' not in data or 'content' not in data:
         return {'error': 'Missing fields'}, 400
 
@@ -54,7 +56,6 @@ def create_post():
                 user_id=user_id)
     db.session.add(post)
     db.session.commit()
-
     return post.to_dict(), 201
 
 

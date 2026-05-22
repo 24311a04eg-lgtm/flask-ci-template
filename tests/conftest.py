@@ -5,6 +5,7 @@ from app import create_app, db
 @pytest.fixture
 def app():
     app = create_app('testing')
+    app.config['JWT_ALGORITHM'] = 'HS256'
 
     with app.app_context():
         db.create_all()
