@@ -16,11 +16,14 @@ def test_create_post_authenticated(client):
     })
     token = login.json['access_token']
 
-    response = client.post('/api/posts',
-                           json={'title': 'Test Post',
-                                 'content': 'Test content'},
-                           headers={'Authorization': f'Bearer {token}',
-                                   'Content-Type': 'application/json'})
+    response = client.post(
+        '/api/posts',
+        json={'title': 'Test Post', 'content': 'Test content'},
+        headers={
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+    )
 
     assert response.status_code == 201
     assert response.json['title'] == 'Test Post'
@@ -45,10 +48,14 @@ def test_get_single_post(client):
     })
     token = login.json['access_token']
 
-    created = client.post('/api/posts',
-                          json={'title': 'Test', 'content': 'Content'},
-                          headers={'Authorization': f'Bearer {token}',
-                                  'Content-Type': 'application/json'})
+    created = client.post(
+        '/api/posts',
+        json={'title': 'Test', 'content': 'Content'},
+        headers={
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+    )
     assert created.status_code == 201
     post_id = created.json['id']
 
