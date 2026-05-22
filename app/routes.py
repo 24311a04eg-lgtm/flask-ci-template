@@ -45,8 +45,7 @@ def get_posts():
 @jwt_required()
 def create_post():
     user_id = get_jwt_identity()
-    
-    # Try to get JSON data, handle case where it might be None
+
     data = request.get_json(silent=True) or {}
 
     if not data or 'title' not in data or 'content' not in data:
