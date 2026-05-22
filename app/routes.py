@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app import db
 from app.models import User, Post, Comment
@@ -45,21 +45,17 @@ def get_posts():
 @jwt_required()
 def create_post():
     user_id = get_jwt_identity()
-
-    data = request.get_json(silent=True) or {}
+    data = request.get_json()
 
     if not data or 'title' not in data or 'content' not in data:
-        return jsonify({'error': 'Missing fields'}), 400
+        return {'error': 'Missing fields'}, 400
 
-    try:
-        post = Post(title=data['title'], content=data['content'],
-                    user_id=user_id)
-        db.session.add(post)
-        db.session.commit()
-        return jsonify(post.to_dict()), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 400
+    post = Post(title=data['title'], content=data['content'],
+                user_id=user_id)
+    db.session.add(post)
+    db.session.commit()
+
+    return post.to_dict(), 201
 
 
 @posts_bp.route('/<int:post_id>', methods=['GET'])

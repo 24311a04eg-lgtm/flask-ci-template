@@ -19,10 +19,13 @@ def create_app(config_name='development'):
         app.config['TESTING'] = True
         app.config['JWT_SECRET_KEY'] = 'test-secret-key'
     else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
-        app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'dev-secret-key')
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+            'DATABASE_URL', 'sqlite:///app.db')
+        app.config['JWT_SECRET_KEY'] = os.getenv(
+            'JWT_SECRET_KEY', 'dev-secret-key')
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JSON_SORT_KEYS'] = False
 
     db.init_app(app)
     jwt.init_app(app)
