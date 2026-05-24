@@ -6,6 +6,7 @@ from app import create_app, db
 def app():
     app = create_app('testing')
     app.config['JWT_ALGORITHM'] = 'HS256'
+    app.config['JWT_DECODE_LEEWAY'] = 10
 
     with app.app_context():
         db.create_all()
